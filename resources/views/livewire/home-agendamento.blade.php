@@ -54,7 +54,7 @@
 
     <div class="mt-16">
         @if($passoAtual === 1)
-            <div class="flex w-full mx-auto max-w-sm justify-center p-6 border border-gray-300 rounded-2xl">
+            <div class="flex mt-1 w-full mx-auto max-w-sm justify-center p-6 border border-gray-300 rounded-2xl">
                 <h2>Identificação</h2>
 
             </div>
