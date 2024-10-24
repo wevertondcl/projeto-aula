@@ -285,8 +285,8 @@
 
                         <div>
                             @if($errors)
-                                @foreach($errors->all() as $error)
-                                    <p class="text-red-500">{{$error}}</p>
+                                @foreach($errors->all() as $index => $error)
+                                    <p class="text-red-500" wire:key="errors-passo-dois-{{$index}}">{{$error}}</p>
                                 @endforeach
                             @endif
                         </div>
@@ -323,6 +323,7 @@
                                                 'ring-1 ring-gray-300 bg-white text-gray-900 hover:bg-gray-50' => $diaSelecionado !== $chave && $dia['disponibilidade'] === true,
 
                                             ])
+                                        wire:key="dia-agendamento-{{$chave}}"
                                     >
                                         <input wire:model.live="diaSelecionado" type="radio" name="memory-option" value="{{$chave}}" class="sr-only" @disabled($dia['disponibilidade'] === false)>
                                         <span>{{$dia['nome']}}</span>
@@ -349,6 +350,7 @@
                                                          'ring-1 ring-gray-300 bg-white text-gray-900 hover:bg-gray-50' => $horarioSelecionado !== $opcao['id'] && $opcao['disponibilidade'] === true,
 
                                                      ])
+                                                wire:key="horario-agendamento-{{$chave}}-{{$opcao['id']}}"
                                             >
                                                 <input wire:model.live="horarioSelecionado" type="radio" name="opcoes-horario" value="{{$opcao['id']}}" class="sr-only" @disabled($opcao['disponibilidade'] === false)>
                                                 <span>{{$opcao['horario']}}</span>
@@ -361,8 +363,8 @@
 
                         <div>
                             @if($errors)
-                                @foreach($errors->all() as $error)
-                                    <p class="text-red-500">{{$error}}</p>
+                                @foreach($errors->all() as $index => $error)
+                                    <p class="text-red-500" wire:key="errors-passo-tres-{{$index}}">{{$error}}</p>
                                 @endforeach
                             @endif
                         </div>
