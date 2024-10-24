@@ -17,6 +17,10 @@ class HomeAgendamento extends Component
     public string $diaSelecionado = '';
     public int $horarioSelecionado = 0;
 
+    public bool $passoUmCompleto = false;
+    public bool $passoDoisCompleto = false;
+    public bool $passoTresCompleto = false;
+
     public $diasDisponiveis = [
        'domingo' => [
            'nome' => 'Domingo',
@@ -158,15 +162,15 @@ class HomeAgendamento extends Component
        }
 
         if ($variavel === 'nome'){
-            $this->validate([
-                'nome' => 'required|min:10',
-            ]);
+            $this->avancarPassoDois();
         }
 
         if ($variavel === 'email'){
-            $this->validate([
-                'email' => 'required|email',
-            ]);
+            $this->avancarPassoDois();
+        }
+
+        if ($variavel === 'corte' || $variavel === 'barba' || $variavel === 'sobrancelha'){
+            $this->avancarPassoTres();
         }
 
     }
@@ -175,16 +179,21 @@ class HomeAgendamento extends Component
     {
         $this->passoAtual = $passo;
     }
-    public function avancarPassoDois(){
+    public function avancarPassoDois($avancarPagina = false){
+        $this->passoUmCompleto = false;
         $this->validate([
             'nome' => 'required|min:10',
             'email' => 'required|email',
         ]);
+        $this->passoUmCompleto = true;
+        if ($avancarPagina){
+            $this->passoAtual = 2;
+        }
 
-        $this->passoAtual = 2;
     }
 
-    public function avancarPassoTres(){
+    public function avancarPassoTres($avancarPagina = false){
+
         $this->validate([
             'nome' => 'required|min:10',
             'email' => 'required|email',
@@ -193,10 +202,14 @@ class HomeAgendamento extends Component
             'sobrancelha' => 'required|boolean',
         ]);
         if (!$this->validarProcedimentos()){
+            $this->passoDoisCompleto = false;
             return;
         }
+        $this->passoDoisCompleto = true;
 
-        $this->passoAtual = 3;
+        if ($avancarPagina){
+            $this->passoAtual = 3;
+        }
         //dd($this->corte, $this->barba, $this->sobrancelha);
     }
 
@@ -231,7 +244,7 @@ class HomeAgendamento extends Component
             $this->addError('horarioSelecionado', 'Horário indisponível');
             return;
         }
-
+        $this->passoTresCompleto = true;
         $this->passoAtual = 4;
 
     }
