@@ -5,44 +5,15 @@
             <li class="relative md:flex md:flex-1" wire:click="mudarPasso(1)">
 
                 @if($passoAtual === 1 && $passoUmCompleto)
-                    <a href="#" class="group flex w-full items-center">
-
-                        <span class="flex items-center px-6 py-4 text-sm font-medium">
-                            <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 group-hover:bg-indigo-800">
-                                <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-                                    <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd" />
-                                </svg>
-                            </span>
-                            <span class="ml-4 text-sm font-medium text-gray-900">Passo 1</span>
-                        </span>
-
-                    </a>
+                    <x-navbar-item-selecionado-completo titulo="Passo 1"/>
                 @endif
 
                 @if($passoAtual === 1 && !$passoUmCompleto)
-                    <a href="#" class="flex items-center px-6 py-4 text-sm font-medium" aria-current="step">
-
-                        <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-indigo-600">
-                            <span class="text-indigo-600">01</span>
-                        </span>
-                        <span class="ml-4 text-sm font-medium text-indigo-600">Passo 1</span>
-
-                    </a>
+                    <x-navbar-item-incompleto numero="01" titulo="Passo 1"/>
                 @endif
 
                 @if($passoAtual !== 1 && $passoUmCompleto)
-                    <a href="#" class="group flex w-full items-center">
-
-                        <span class="flex items-center px-6 py-4 text-sm font-medium">
-                            <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 group-hover:bg-indigo-800">
-                                <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-                                    <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd" />
-                                </svg>
-                            </span>
-                            <span class="ml-4 text-sm font-medium text-gray-900">Passo 1</span>
-                        </span>
-
-                    </a>
+                    <x-navbar-item-completo titulo="Passo 1"/>
                 @endif
 
 
@@ -57,57 +28,19 @@
             <li class="relative md:flex md:flex-1" wire:click="avancarPassoDois(true)">
 
                 @if($passoAtual === 2 && $passoDoisCompleto)
-                    <a href="#" class="group flex w-full items-center">
-
-                        <span class="flex items-center px-6 py-4 text-sm font-medium">
-                            <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 group-hover:bg-indigo-800">
-                                <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-                                    <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd" />
-                                </svg>
-                            </span>
-                            <span class="ml-4 text-sm font-medium text-gray-900">Passo 2</span>
-                        </span>
-
-                    </a>
+                    <x-navbar-item-selecionado-completo titulo="Passo 2"/>
                 @endif
 
                 @if($passoAtual === 2 && !$passoDoisCompleto)
-                    <a href="#" class="flex items-center px-6 py-4 text-sm font-medium" aria-current="step">
-
-                        <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-indigo-600">
-                            <span class="text-indigo-600">02</span>
-                        </span>
-                        <span class="ml-4 text-sm font-medium text-indigo-600">Passo 2</span>
-
-                    </a>
+                    <x-navbar-item-incompleto numero="02" titulo="Passo 2"/>
                 @endif
 
                 @if($passoAtual !== 2 && $passoDoisCompleto)
-                    <a href="#" class="group flex w-full items-center">
-
-                        <span class="flex items-center px-6 py-4 text-sm font-medium">
-                            <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 group-hover:bg-indigo-800">
-                                <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-                                    <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd" />
-                                </svg>
-                            </span>
-                            <span class="ml-4 text-sm font-medium text-gray-900">Passo 2</span>
-                        </span>
-
-                    </a>
+                    <x-navbar-item-completo titulo="Passo 2"/>
                 @endif
 
                 @if($passoAtual !== 2 && !$passoDoisCompleto)
-                    <a href="#" class="group flex items-center">
-
-                        <span class="flex items-center px-6 py-4 text-sm font-medium">
-                            <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-gray-300 group-hover:border-gray-400">
-                                <span class="text-gray-500 group-hover:text-gray-900">02</span>
-                            </span>
-                            <span class="ml-4 text-sm font-medium text-gray-500 group-hover:text-gray-900">Passo 2</span>
-                        </span>
-
-                    </a>
+                    <x-navbar-item-passo numero="02" titulo="Passo 2" />
                 @endif
 
                 <!-- Arrow separator for lg screens and up -->
@@ -120,57 +53,19 @@
 
             <li class="relative md:flex md:flex-1" wire:click="avancarPassoTres(true)">
                 @if($passoAtual === 3 && $passoTresCompleto)
-                    <a href="#" class="group flex w-full items-center">
-
-                        <span class="flex items-center px-6 py-4 text-sm font-medium">
-                            <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 group-hover:bg-indigo-800">
-                                <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-                                    <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd" />
-                                </svg>
-                            </span>
-                            <span class="ml-4 text-sm font-medium text-gray-900">Passo 3</span>
-                        </span>
-
-                    </a>
+                    <x-navbar-item-selecionado-completo titulo="Passo 3"/>
                 @endif
 
                 @if($passoAtual === 3 && !$passoTresCompleto)
-                    <a href="#" class="flex items-center px-6 py-4 text-sm font-medium" aria-current="step">
-
-                        <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-indigo-600">
-                            <span class="text-indigo-600">03</span>
-                        </span>
-                        <span class="ml-4 text-sm font-medium text-indigo-600">Passo 3</span>
-
-                    </a>
+                    <x-navbar-item-incompleto numero="03" titulo="Passo 3"/>
                 @endif
 
                 @if($passoAtual !== 3 && $passoTresCompleto)
-                    <a href="#" class="group flex w-full items-center">
-
-                        <span class="flex items-center px-6 py-4 text-sm font-medium">
-                            <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 group-hover:bg-indigo-800">
-                                <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-                                    <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd" />
-                                </svg>
-                            </span>
-                            <span class="ml-4 text-sm font-medium text-gray-900">Passo 3</span>
-                        </span>
-
-                    </a>
+                    <x-navbar-item-completo titulo="Passo 3"/>
                 @endif
 
                 @if($passoAtual !== 3 && !$passoTresCompleto)
-                    <a href="#" class="group flex items-center">
-
-                        <span class="flex items-center px-6 py-4 text-sm font-medium">
-                            <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-gray-300 group-hover:border-gray-400">
-                                <span class="text-gray-500 group-hover:text-gray-900">03</span>
-                            </span>
-                            <span class="ml-4 text-sm font-medium text-gray-500 group-hover:text-gray-900">Passo 3</span>
-                        </span>
-
-                    </a>
+                    <x-navbar-item-passo numero="03" titulo="Passo 3" />
                 @endif
             </li>
 
@@ -182,56 +77,11 @@
             <div class="flex flex-col w-full mx-auto max-w-sm justify-center p-6 border border-gray-300 rounded-2xl">
                 <h2 class="text-lg font-bold text-indigo-600">Identificação</h2>
 
-                <form class="mt-5 space-y-6" wire:submit="avancarPassoDois(true)">
+                <form class="mt-5 space-y-6" wire:submit="avancarPassoDois(true)" x-data="{}">
 
-                    <div>
-                        <label for="nome" class="block text-sm font-medium leading-6 text-gray-900">Nome</label>
-                        <div class="relative mt-2 rounded-md shadow-sm">
-                            <input wire:model.live.debounce.600ms="nome" type="text" name="nome" id="nome"
-                                   @class([
-                                        'block w-full rounded-md border-0 py-1.5 pr-10 text-red-900 ring-1 ring-inset ring-red-300 placeholder:text-red-300 focus:ring-2 focus:ring-inset
-                                        focus:ring-red-500  sm:text-sm sm:leading-6' => $errors->has('nome'),
-                                        'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
-                                        focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6' => !$errors->has('nome')
-                                    ])
-                                   placeholder="Digite seu nome" aria-invalid="true" aria-describedby="nome-error">
-                                @if($errors->has('nome'))
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                                        <svg class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
-                                            <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                @endif
-                        </div>
-                        @if($errors->has('nome'))
-                            <p class="mt-2 text-sm text-red-600" id="email-error">{{$errors->first('nome')}}</p>
-                        @endif
-                    </div>
-
-                    <div>
-                        <label for="email" class="block text-sm font-medium leading-6 text-gray-900">E-mail</label>
-                        <div class="relative mt-2 rounded-md shadow-sm">
-                            <input wire:model.live.debounce.600ms="email" type="email" name="email" id="email"
-                                   @class([
-                                        'block w-full rounded-md border-0 py-1.5 pr-10 text-red-900 ring-1 ring-inset ring-red-300 placeholder:text-red-300 focus:ring-2 focus:ring-inset
-                                        focus:ring-red-500  sm:text-sm sm:leading-6' => $errors->has('email'),
-                                        'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
-                                        focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6' => !$errors->has('email')
-                                    ])
-                                   placeholder="Digite seu e-mail" aria-invalid="true" aria-describedby="email-error">
-                            @if($errors->has('email'))
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                                    <svg class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
-                                        <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                            @endif
-                        </div>
-                        @if($errors->has('email'))
-                            <p class="mt-2 text-sm text-red-600" id="email-error">{{$errors->first('email')}}</p>
-                        @endif
-                    </div>
-
+                    <x-input-text-default label="Nome" campo="nome" :erros="$errors" type="text" placeholder="Digite seu nome" />
+                    <x-input-text-default label="E-mail" campo="email" :erros="$errors" type="email" placeholder="Digite seu e-mail" />
+                    <x-input-text-default label="Celular" campo="celular" :erros="$errors" type="text" placeholder="(11) 99156-2563" />
 
                     <div>
                         <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2
