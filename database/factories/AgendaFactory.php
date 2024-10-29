@@ -17,8 +17,8 @@ class AgendaFactory extends Factory
     public function definition(): array
     {
         return [
-            'mes' => $this->faker->month(),
-            'ano' => $this->faker->year(),
+            'mes' => 10,
+            'ano' => 2024,
             'status' => $this->faker->boolean(),
         ];
     }

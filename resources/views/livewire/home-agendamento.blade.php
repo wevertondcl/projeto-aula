@@ -81,7 +81,7 @@
 
                     <x-input-text-default label="Nome" campo="nome" :erros="$errors" type="text" placeholder="Digite seu nome" />
                     <x-input-text-default label="E-mail" campo="email" :erros="$errors" type="email" placeholder="Digite seu e-mail" />
-                    <x-input-text-default label="Celular" campo="celular" :erros="$errors" type="text" placeholder="(11) 99156-2563" />
+
 
                     <div>
                         <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2

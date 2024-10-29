@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\AgendaDia;
 use Livewire\Component;
 
 class HomeAgendamento extends Component
@@ -139,6 +140,16 @@ class HomeAgendamento extends Component
             ],
         ]
     ];
+
+    public function mount()
+    {
+       $this->diasDisponiveis = [];
+       $barbeiroSelecionado = 1;
+
+       $diasDisponiveis = AgendaDia::where('agenda_id',$barbeiroSelecionado)->get();
+       dd($diasDisponiveis);
+
+    }
 
     public function messages(){
         return [
