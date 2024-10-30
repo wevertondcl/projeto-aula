@@ -3,6 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\AgendaDia;
+
+use App\Models\AgendaDiaHorario;
+use App\Models\AgendaDiaHorarioAgendado;
 use Livewire\Component;
 
 class HomeAgendamento extends Component
@@ -15,141 +18,86 @@ class HomeAgendamento extends Component
     public bool $barba = false;
     public bool $sobrancelha = false;
 
-    public string $diaSelecionado = '';
+    public int $diaSelecionado = 0;
     public int $horarioSelecionado = 0;
 
     public bool $passoUmCompleto = false;
     public bool $passoDoisCompleto = false;
     public bool $passoTresCompleto = false;
 
-    public $diasDisponiveis = [
-       'domingo' => [
-           'nome' => 'Domingo',
-           'disponibilidade' => false
-       ],
-       'segunda' => [
-           'nome' => 'Segunda-feira',
-           'disponibilidade' => true
-       ],
-        'terca' => [
-          'nome' => 'Terça-feira',
-          'disponibilidade' => true
-        ],
-        'quarta' => [
-          'nome' => 'Quarta-feira',
-          'disponibilidade' => true
-        ],
-        'quinta' => [
-          'nome' => 'Quinta-feira',
-          'disponibilidade' => true
-        ],
-        'sexta' => [
-          'nome' => 'Sexta-feira',
-          'disponibilidade' => true
-        ],
-        'sabado' => [
-          'nome' => 'Sábado',
-          'disponibilidade' => false
-        ],
-    ];
-
-    public $horariosDisponiveis = [
-        'segunda' => [
-            [
-                'id' => 1,
-                'horario' => '08:00',
-                'disponibilidade' => true
-            ],
-            [
-                'id' => 2,
-                'horario' => '09:00',
-                'disponibilidade' => true
-            ],
-            [
-                'id' => 3,
-                'horario' => '10:00',
-                'disponibilidade' => false
-            ],
-        ],
-        'terca' => [
-            [
-                'id' => 200,
-                'horario' => '08:00',
-                'disponibilidade' => false
-            ],
-            [
-                'id' => 201,
-                'horario' => '09:00',
-                'disponibilidade' => true
-            ],
-            [
-                'id' => 205,
-                'horario' => '10:00',
-                'disponibilidade' => true
-            ],
-        ],
-        'quarta' => [
-            [
-                'id' => 300,
-                'horario' => '14:00',
-                'disponibilidade' => false
-            ],
-            [
-                'id' => 301,
-                'horario' => '16:00',
-                'disponibilidade' => true
-            ],
-            [
-                'id' => 305,
-                'horario' => '20:00',
-                'disponibilidade' => true
-            ],
-        ],
-        'quinta' => [
-            [
-                'id' => 400,
-                'horario' => '12:00',
-                'disponibilidade' => false
-            ],
-            [
-                'id' => 401,
-                'horario' => '13:00',
-                'disponibilidade' => true
-            ],
-            [
-                'id' => 405,
-                'horario' => '15:00',
-                'disponibilidade' => true
-            ],
-        ],
-        'sexta' => [
-            [
-                'id' => 700,
-                'horario' => '09:00',
-                'disponibilidade' => false
-            ],
-            [
-                'id' => 701,
-                'horario' => '11:00',
-                'disponibilidade' => true
-            ],
-            [
-                'id' => 702,
-                'horario' => '10:00',
-                'disponibilidade' => true
-            ],
-        ]
-    ];
+    public $diasDisponiveis = [];
+    public $horariosDisponiveis = [];
 
     public function mount()
     {
-       $this->diasDisponiveis = [];
        $barbeiroSelecionado = 1;
-
        $diasDisponiveis = AgendaDia::where('agenda_id',$barbeiroSelecionado)->get();
-       dd($diasDisponiveis);
+
+         foreach ($diasDisponiveis as $key => $data){
+             $dia = $this->traduzirDiaSemana(date('l', strtotime($data->dia)));
+              $this->diasDisponiveis[$key] = [
+                'id' => $data->id,
+                'nome' => $dia['formatado'],
+                'disponibilidade' => (bool)$data->disponibilidade
+              ];
+         }
 
     }
+
+    public function carregarHorariosDisponiveis()
+    {
+
+        $horariosDisponiveis = [];
+        $horarios = AgendaDia::find($this->diaSelecionado)->agendaDiaHorario;
+
+        foreach ($horarios as $key => $horario){
+            $horariosDisponiveis[$key] = [
+                'id' => $horario->id,
+                //'dia_id' => $horario->agenda_dia_id,
+                'horario' => substr($horario->horario,0,5),
+                'disponibilidade' => (bool)$horario->disponibilidade
+            ];
+        }
+        $this->horariosDisponiveis = $horariosDisponiveis;
+    }
+
+    public function traduzirDiaSemana($dia): array
+    {
+        $dia = strtolower($dia);
+        $dias = [
+            'sunday' => [
+                'formatado' => 'Domingo',
+                'minusculo' => 'domingo'
+            ],
+            'monday' => [
+                'formatado' => 'Segunda-feira',
+                'minusculo' => 'segunda'
+            ],
+            'tuesday' => [
+                'formatado' => 'Terça-feira',
+                'minusculo' => 'terca'
+            ],
+            'wednesday' => [
+                'formatado' => 'Quarta-feira',
+                'minusculo' => 'quarta'
+            ],
+            'thursday' => [
+                'formatado' => 'Quinta-feira',
+                'minusculo' => 'quinta'
+            ],
+            'friday' => [
+                'formatado' => 'Sexta-feira',
+                'minusculo' => 'sexta'
+            ],
+            'saturday' => [
+                'formatado' => 'Sábado',
+                'minusculo' => 'sabado'
+            ],
+        ];
+
+        return $dias[$dia];
+    }
+
 
     public function messages(){
         return [
@@ -170,6 +118,7 @@ class HomeAgendamento extends Component
     {
        if (str_starts_with($variavel,'diaSelecionado')){
            $this->horarioSelecionado = 0;
+           $this->carregarHorariosDisponiveis();
        }
 
         if ($variavel === 'nome'){
@@ -232,8 +181,8 @@ class HomeAgendamento extends Component
             'corte' => 'required|boolean',
             'barba' => 'required|boolean',
             'sobrancelha' => 'required|boolean',
-            'diaSelecionado' => 'required|string|in:domingo,segunda,terca,quarta,quinta,sexta,sabado',
-            'horarioSelecionado' => 'required|integer'
+            'diaSelecionado' => 'required|integer|exists:agenda_dias,id',
+            'horarioSelecionado' => 'required|integer|exists:agenda_dia_horarios,id',
         ]);
 
         if (!$this->validarProcedimentos()){
@@ -247,7 +196,7 @@ class HomeAgendamento extends Component
         }
 
         // Filtrar o array para encontrar o item com o 'id' desejado e verificar se 'status' é true
-        $encontrado = array_filter($this->horariosDisponiveis[$this->diaSelecionado], function($horario) {
+        $encontrado = array_filter($this->horariosDisponiveis, function($horario) {
             return $horario['id'] === $this->horarioSelecionado && $horario['disponibilidade'] === true;
         });
 
@@ -255,8 +204,35 @@ class HomeAgendamento extends Component
             $this->addError('horarioSelecionado', 'Horário indisponível');
             return;
         }
-        $this->passoTresCompleto = true;
-        $this->passoAtual = 4;
+        $this->salvarAgendamento();
+
+
+
+    }
+
+    public function salvarAgendamento()
+    {
+        $gravacao = AgendaDiaHorarioAgendado::create([
+            'agenda_dia_horario_id' => $this->horarioSelecionado,
+            'nome' => $this->nome,
+            'email' => $this->email,
+
+            'corte' => $this->corte,
+            'barba' => $this->barba,
+            'sobrancelha' => $this->sobrancelha,
+        ]);
+
+        if ($gravacao) {
+            $this->passoTresCompleto = true;
+            $this->passoAtual = 4;
+            //$this->reset();
+            //session()->flash('message', 'Agendamento realizado com sucesso');
+        }else{
+            dd('Erro ao salvar');
+        }
+
+
+
 
     }
 

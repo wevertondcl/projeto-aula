@@ -163,19 +163,19 @@
                             </div>
 
                             <div class="mt-2 grid grid-cols-3 gap-3">
-                                @foreach($diasDisponiveis as $chave => $dia)
+                                @foreach($diasDisponiveis as $dia)
                                     <label
                                            @class([
                                                 'flex items-center justify-center rounded-md px-3 py-3 text-xs font-semibold uppercase focus:outline-none sm:flex-1' => true,
                                                 'cursor-pointer' => $dia['disponibilidade'] === true,
                                                 'cursor-not-allowed opacity-25 ring-inset ring-1 ring-gray-300 bg-white text-gray-900' => $dia['disponibilidade'] === false,
-                                                'ring-indigo-600 ring-offset-2 ring-0 bg-indigo-600 text-white hover:bg-indigo-500' => $diaSelecionado === $chave,
-                                                'ring-1 ring-gray-300 bg-white text-gray-900 hover:bg-gray-50' => $diaSelecionado !== $chave && $dia['disponibilidade'] === true,
+                                                'ring-indigo-600 ring-offset-2 ring-0 bg-indigo-600 text-white hover:bg-indigo-500' => $diaSelecionado === $dia['id'],
+                                                'ring-1 ring-gray-300 bg-white text-gray-900 hover:bg-gray-50' => $diaSelecionado !== $dia['id'] && $dia['disponibilidade'] === true,
 
                                             ])
-                                        wire:key="dia-agendamento-{{$chave}}"
+                                        wire:key="dia-agendamento-{{$dia['id']}}"
                                     >
-                                        <input wire:model.live="diaSelecionado" type="radio" name="memory-option" value="{{$chave}}" class="sr-only" @disabled($dia['disponibilidade'] === false)>
+                                        <input wire:model.live="diaSelecionado" type="radio" name="memory-option" value="{{$dia['id']}}" class="sr-only" @disabled($dia['disponibilidade'] === false)>
                                         <span>{{$dia['nome']}}</span>
                                     </label>
                                 @endforeach
@@ -188,26 +188,25 @@
                             </div>
 
                             <div class="mt-2 grid grid-cols-3 gap-3">
-                                @foreach($horariosDisponiveis as $chave => $horario)
-                                    @if($chave === $diaSelecionado)
-                                        @foreach($horario as $key => $opcao)
-                                            <label
-                                                    @class([
-                                                         'flex items-center justify-center rounded-md px-3 py-3 text-xs font-semibold uppercase focus:outline-none sm:flex-1' => true,
-                                                         'cursor-pointer' => $opcao['disponibilidade'] === true,
-                                                         'cursor-not-allowed opacity-25 ring-inset ring-1 ring-gray-300 bg-white text-gray-900' => $opcao['disponibilidade'] === false,
-                                                         'ring-indigo-600 ring-offset-2 ring-0 bg-indigo-600 text-white hover:bg-indigo-500' => $horarioSelecionado === $opcao['id'],
-                                                         'ring-1 ring-gray-300 bg-white text-gray-900 hover:bg-gray-50' => $horarioSelecionado !== $opcao['id'] && $opcao['disponibilidade'] === true,
 
-                                                     ])
-                                                wire:key="horario-agendamento-{{$chave}}-{{$opcao['id']}}"
-                                            >
-                                                <input wire:model.live="horarioSelecionado" type="radio" name="opcoes-horario" value="{{$opcao['id']}}" class="sr-only" @disabled($opcao['disponibilidade'] === false)>
-                                                <span>{{$opcao['horario']}}</span>
-                                            </label>
-                                        @endforeach
-                                    @endif
+                                @foreach($horariosDisponiveis as $key => $opcao)
+                                    <label
+                                            @class([
+                                                 'flex items-center justify-center rounded-md px-3 py-3 text-xs font-semibold uppercase focus:outline-none sm:flex-1' => true,
+                                                 'cursor-pointer' => $opcao['disponibilidade'] === true,
+                                                 'cursor-not-allowed opacity-25 ring-inset ring-1 ring-gray-300 bg-white text-gray-900' => $opcao['disponibilidade'] === false,
+                                                 'ring-indigo-600 ring-offset-2 ring-0 bg-indigo-600 text-white hover:bg-indigo-500' => $horarioSelecionado === $opcao['id'],
+                                                 'ring-1 ring-gray-300 bg-white text-gray-900 hover:bg-gray-50' => $horarioSelecionado !== $opcao['id'] && $opcao['disponibilidade'] === true,
+
+                                             ])
+                                        wire:key="horario-agendamento-{{$opcao['id']}}"
+                                    >
+                                        <input wire:model.live="horarioSelecionado" type="radio" name="opcoes-horario" value="{{$opcao['id']}}" class="sr-only" @disabled($opcao['disponibilidade'] === false)>
+                                        <span>{{$opcao['horario']}}</span>
+                                    </label>
                                 @endforeach
+
+
                             </div>
                         </fieldset>
 
