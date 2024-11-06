@@ -28,20 +28,26 @@ class HomeAgendamento extends Component
     public $diasDisponiveis = [];
     public $horariosDisponiveis = [];
 
+    public $barbeiroSelecionado = 1;
+
     public function mount()
     {
-       $barbeiroSelecionado = 1;
-       $diasDisponiveis = AgendaDia::where('agenda_id',$barbeiroSelecionado)->get();
+       $this->barbeiroSelecionado = 1;
+       $this->carregarDiasDisponiveis();
 
-         foreach ($diasDisponiveis as $key => $data){
-             $dia = $this->traduzirDiaSemana(date('l', strtotime($data->dia)));
-              $this->diasDisponiveis[$key] = [
+    }
+
+    public function carregarDiasDisponiveis()
+    {
+        $diasDisponiveis = AgendaDia::where('agenda_id',$this->barbeiroSelecionado)->get();
+        foreach ($diasDisponiveis as $key => $data){
+            $dia = $this->traduzirDiaSemana(date('l', strtotime($data->dia)));
+            $this->diasDisponiveis[$key] = [
                 'id' => $data->id,
                 'nome' => $dia['formatado'],
                 'disponibilidade' => (bool)$data->disponibilidade
-              ];
-         }
-
+            ];
+        }
     }
 
     public function carregarHorariosDisponiveis()
@@ -212,27 +218,37 @@ class HomeAgendamento extends Component
 
     public function salvarAgendamento()
     {
-        $gravacao = AgendaDiaHorarioAgendado::create([
-            'agenda_dia_horario_id' => $this->horarioSelecionado,
-            'nome' => $this->nome,
-            'email' => $this->email,
+        $verificacaoHorario  = AgendaDiaHorario::where('id',$this->horarioSelecionado)
+            ->where('disponibilidade',1)
+            ->first();
 
-            'corte' => $this->corte,
-            'barba' => $this->barba,
-            'sobrancelha' => $this->sobrancelha,
-        ]);
+        if ($verificacaoHorario) {
+            $gravacao = AgendaDiaHorarioAgendado::create([
+                'agenda_dia_horario_id' => $this->horarioSelecionado,
+                'nome' => $this->nome,
+                'email' => $this->email,
 
-        if ($gravacao) {
-            $this->passoTresCompleto = true;
-            $this->passoAtual = 4;
-            //$this->reset();
-            //session()->flash('message', 'Agendamento realizado com sucesso');
+                'corte' => $this->corte,
+                'barba' => $this->barba,
+                'sobrancelha' => $this->sobrancelha,
+            ]);
+
+            $gravacaoBloqueio = AgendaDiaHorario::where('id',$this->horarioSelecionado)
+                ->update([
+                    'disponibilidade' => 0 // false
+                ]);
+
+            if ($gravacao) {
+                $this->passoTresCompleto = true;
+                //$this->passoAtual = 4;
+                $this->reset();
+                $this->carregarDiasDisponiveis();
+            } else {
+                $this->addError('horarioSelecionado','Ops! este horário está bloqueado, selecione outra opção!');
+            }
         }else{
-            dd('Erro ao salvar');
+            $this->addError('horarioSelecionado','Ops! Alguém já pegou esse horário, selecione outra opção!');
         }
-
-
-
 
     }
 
