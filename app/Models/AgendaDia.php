@@ -16,6 +16,11 @@ class AgendaDia extends Model
         'disponibilidade',
     ];
 
+    protected $casts = [
+        'dia' => 'datetime',
+    ];
+
+
     public function agenda(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Agenda::class);

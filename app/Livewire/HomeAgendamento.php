@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Agenda;
 use App\Models\AgendaDia;
 
 use App\Models\AgendaDiaHorario;
@@ -10,7 +11,7 @@ use Livewire\Component;
 
 class HomeAgendamento extends Component
 {
-    public $passoAtual = 1;
+    public $passoAtual = 3;
     public $nome = '';
     public $email = '';
 
@@ -19,6 +20,7 @@ class HomeAgendamento extends Component
     public bool $sobrancelha = false;
 
     public int $diaSelecionado = 0;
+    public $dadosDiaSelecionado = [];
     public int $horarioSelecionado = 0;
 
     public bool $passoUmCompleto = false;
@@ -29,11 +31,31 @@ class HomeAgendamento extends Component
     public $horariosDisponiveis = [];
 
     public $barbeiroSelecionado = 1;
+    public $agenda = [];
+
+    public $mesAtual = '10';
+    public $anoAtual = '2024';
 
     public function mount()
     {
        $this->barbeiroSelecionado = 1;
        $this->carregarDiasDisponiveis();
+
+        $this->buscarAgendaBarbeiro($this->mesAtual,$this->anoAtual);
+
+    }
+
+    public function buscarAgendaBarbeiro($mes,$ano)
+    {
+        //busca a agenda do mes e ano atual do barbeiro selecionado + os dias disponiveis
+        $agenda = Agenda::where('user_id',$this->barbeiroSelecionado)
+            ->where('mes',$mes)
+            ->where('ano',$ano)
+            ->with('agendaDia')
+            ->first();
+
+        //garante que os dias estão na ordem correta
+        $this->agenda = $agenda->agendaDia->sortBy('dia');
 
     }
 
@@ -120,12 +142,40 @@ class HomeAgendamento extends Component
         ];
     }
 
+    public function alterarDiaSelecionado($diaId = 0)
+    {
+        $this->resetErrorBag();
+        if ($diaId === 0) {
+            $this->addError('diaSelecionado', 'Você deve selecionar um dia');
+            return;
+        }
+        if (!empty($diaId)) {
+           $diaDisponivel = AgendaDia::where('id',$diaId)
+               ->where('disponibilidade',1)
+               ->first();
+
+           $this->dadosDiaSelecionado = $diaDisponivel;
+
+
+           if (!$diaDisponivel){
+                $this->addError('diaSelecionado', 'Ops! Este dia está indisponível');
+                return;
+           }
+        }
+
+
+        $this->diaSelecionado = $diaId;
+        $this->horarioSelecionado = 0;
+        $this->carregarHorariosDisponiveis();
+    }
+
     public function updated($variavel)
     {
+        /*
        if (str_starts_with($variavel,'diaSelecionado')){
-           $this->horarioSelecionado = 0;
-           $this->carregarHorariosDisponiveis();
+          $this->alterarDiaSelecionado();
        }
+        */
 
         if ($variavel === 'nome'){
             $this->avancarPassoDois();
@@ -243,6 +293,7 @@ class HomeAgendamento extends Component
                 //$this->passoAtual = 4;
                 $this->reset();
                 $this->carregarDiasDisponiveis();
+                $this->buscarAgendaBarbeiro($this->mesAtual,$this->anoAtual);
             } else {
                 $this->addError('horarioSelecionado','Ops! este horário está bloqueado, selecione outra opção!');
             }

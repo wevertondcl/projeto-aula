@@ -153,79 +153,11 @@
 
         @endif
         @if($passoAtual === 3)
-                <div class="flex flex-col w-full mx-auto max-w-sm justify-center p-6 border border-gray-300 rounded-2xl">
+                <div class="flex flex-col w-full mx-auto max-w-3xl justify-center p-6 border border-gray-300 rounded-2xl">
                     <h2 class="text-lg font-bold text-indigo-600">{{$nome}}, escolha o dia e horário</h2>
-
-                    <form class="mt-5 space-y-6" wire:submit="finalizarAgendamento">
-                        <fieldset aria-label="Choose a memory option">
-                            <div class="flex items-center justify-between">
-                                <div class="text-sm font-medium leading-6 text-gray-900">Dias disponíveis</div>
-                            </div>
-
-                            <div class="mt-2 grid grid-cols-3 gap-3">
-                                @foreach($diasDisponiveis as $dia)
-                                    <label
-                                           @class([
-                                                'flex items-center justify-center rounded-md px-3 py-3 text-xs font-semibold uppercase focus:outline-none sm:flex-1' => true,
-                                                'cursor-pointer' => $dia['disponibilidade'] === true,
-                                                'cursor-not-allowed opacity-25 ring-inset ring-1 ring-gray-300 bg-white text-gray-900' => $dia['disponibilidade'] === false,
-                                                'ring-indigo-600 ring-offset-2 ring-0 bg-indigo-600 text-white hover:bg-indigo-500' => $diaSelecionado === $dia['id'],
-                                                'ring-1 ring-gray-300 bg-white text-gray-900 hover:bg-gray-50' => $diaSelecionado !== $dia['id'] && $dia['disponibilidade'] === true,
-
-                                            ])
-                                        wire:key="dia-agendamento-{{$dia['id']}}"
-                                    >
-                                        <input wire:model.live="diaSelecionado" type="radio" name="memory-option" value="{{$dia['id']}}" class="sr-only" @disabled($dia['disponibilidade'] === false)>
-                                        <span>{{$dia['nome']}}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-                        </fieldset>
-
-                        <fieldset aria-label="Choose a memory option">
-                            <div class="flex items-center justify-between">
-                                <div class="text-sm font-medium leading-6 text-gray-900">Horários disponíveis</div>
-                            </div>
-
-                            <div class="mt-2 grid grid-cols-3 gap-3">
-
-                                @foreach($horariosDisponiveis as $key => $opcao)
-                                    <label
-                                            @class([
-                                                 'flex items-center justify-center rounded-md px-3 py-3 text-xs font-semibold uppercase focus:outline-none sm:flex-1' => true,
-                                                 'cursor-pointer' => $opcao['disponibilidade'] === true,
-                                                 'cursor-not-allowed opacity-25 ring-inset ring-1 ring-gray-300 bg-white text-gray-900' => $opcao['disponibilidade'] === false,
-                                                 'ring-indigo-600 ring-offset-2 ring-0 bg-indigo-600 text-white hover:bg-indigo-500' => $horarioSelecionado === $opcao['id'],
-                                                 'ring-1 ring-gray-300 bg-white text-gray-900 hover:bg-gray-50' => $horarioSelecionado !== $opcao['id'] && $opcao['disponibilidade'] === true,
-
-                                             ])
-                                        wire:key="horario-agendamento-{{$opcao['id']}}"
-                                    >
-                                        <input wire:model.live="horarioSelecionado" type="radio" name="opcoes-horario" value="{{$opcao['id']}}" class="sr-only" @disabled($opcao['disponibilidade'] === false)>
-                                        <span>{{$opcao['horario']}}</span>
-                                    </label>
-                                @endforeach
-
-
-                            </div>
-                        </fieldset>
-
-                        <div>
-                            @if($errors)
-                                @foreach($errors->all() as $index => $error)
-                                    <p class="text-red-500" wire:key="errors-passo-tres-{{$index}}">{{$error}}</p>
-                                @endforeach
-                            @endif
-                        </div>
-
-                        <div>
-                            <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2
-                            focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Finalizar</button>
-                        </div>
-                    </form>
-
-                    <button type="button" wire:click="mudarPasso(2)"  class="mt-10 rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Voltar</button>
+                    <x-calendario-agendamento :dias-agenda="$agenda" :horarios-disponiveis="$horariosDisponiveis" :horario-selecionado="$horarioSelecionado" :dia-selecionado="$diaSelecionado" :dados-dia-selecionado="$dadosDiaSelecionado"/>
                 </div>
+
         @endif
         @if($passoAtual === 4)
                 <div class="flex flex-col w-full mx-auto max-w-sm justify-center p-6 border border-gray-300 rounded-2xl">

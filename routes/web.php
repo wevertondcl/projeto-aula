@@ -10,6 +10,7 @@ Route::get('/primeiro-componente', \App\Livewire\PrimeiroComponente::class)->nam
 //Route::get('/primeiro-componente',\App\Livewire\PrimeiroComponente::class)->name('primeiro.componente.show');
 
 Route::get('/agendar-horario', \App\Livewire\HomeAgendamento::class)->name('home.agendamento.show');
+Route::get('/teste', \App\Livewire\CalendarioAgendamento::class)->name('home.calendario.show');
 
 Route::middleware([
     'auth:sanctum',
