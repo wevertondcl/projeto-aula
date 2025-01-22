@@ -32,11 +32,22 @@
                                 <img class="hidden h-8 w-auto lg:block" src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company">
                             </div>
                             <div class="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-                                <!-- Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
-                                <a href="#" class="inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900" aria-current="page">Dashboard</a>
-                                <a href="#" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">Team</a>
-                                <a href="#" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">Projects</a>
-                                <a href="#" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">Calendar</a>
+
+                                <a href="{{route('home.restrita.show')}}" wire:navigate aria-current="page"
+                                    @class([
+                                        'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium',
+                                        'border-indigo-500 text-gray-900' => request()->routeIs('home.restrita.show'),
+                                        'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' => !request()->routeIs('home.restrita.show')
+                                    ])
+                                >Dashboard</a>
+                                <a href="{{route('agendamento.restrita.show')}}" wire:navigate
+                                    @class([
+                                       'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium',
+                                       'border-indigo-500 text-gray-900' => request()->routeIs('agendamento.restrita.show'),
+                                       'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' => !request()->routeIs('agendamento.restrita.show')
+                                   ])
+                                >Agenda</a>
+
                             </div>
                         </div>
 
@@ -115,11 +126,20 @@
 
                 >
                     <div class="space-y-1 pb-3 pt-2">
-                        <!-- Current: "border-indigo-500 bg-indigo-50 text-indigo-700", Default: "border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800" -->
-                        <a href="#" class="block border-l-4 border-indigo-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-indigo-700" aria-current="page">Dashboard</a>
-                        <a href="#" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800">Team</a>
-                        <a href="#" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800">Projects</a>
-                        <a href="#" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800">Calendar</a>
+                        <a href="{{route('home.restrita.show')}}" wire:navigate aria-current="page"
+                            @class([
+                                'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium',
+                                'border-indigo-500 bg-indigo-50 text-indigo-700' => request()->routeIs('home.restrita.show'),
+                                'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800' => !request()->routeIs('home.restrita.show')
+                            ])
+                        >Dashboard</a>
+                        <a href="{{route('agendamento.restrita.show')}}" wire:navigate
+                            @class([
+                               'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium',
+                               'border-indigo-500 bg-indigo-50 text-indigo-700' => request()->routeIs('agendamento.restrita.show'),
+                               'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800' => !request()->routeIs('agendamento.restrita.show')
+                           ])
+                        >Agenda</a>
                     </div>
                     <div class="border-t border-gray-200 pb-3 pt-4">
                         <div class="flex items-center px-4">
@@ -148,16 +168,7 @@
             </nav>
 
             <div class="py-10">
-                <header>
-                    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                        <h1 class="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
-                    </div>
-                </header>
-                <main>
-                    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                        {{ $slot }}
-                    </div>
-                </main>
+                {{ $slot }}
             </div>
         </div>
     </main>
