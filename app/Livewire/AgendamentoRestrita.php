@@ -16,20 +16,46 @@ class AgendamentoRestrita extends Component
     public $barbeiroSelecionado = 1;
     public $agenda = [];
 
-    public $mesAtual = '10';
-    public $anoAtual = '2024';
+    public $mesAtual = '';
+    public $anoAtual = '';
 
     public int $diaSelecionado = 0;
     public $dadosDiaSelecionado = [];
     public int $horarioSelecionado = 0;
+
+    public bool $proximoMes = true;
+    public bool $mesAnterior = true;
     public function mount()
     {
         $this->barbeiroSelecionado = 1;
-        $this->carregarDiasDisponiveis();
+        $dataUltimaAgenda = Agenda::where('user_id',$this->barbeiroSelecionado)
+            ->orderBy('ano','desc')
+            ->orderBy('mes','desc')
+            ->first();
+        if ($dataUltimaAgenda){
+            $this->mesAtual = $dataUltimaAgenda->mes;
+            $this->anoAtual = $dataUltimaAgenda->ano;
+            $this->buscarAgendaBarbeiro($this->mesAtual,$this->anoAtual);
+        }
 
-        $this->buscarAgendaBarbeiro($this->mesAtual,$this->anoAtual);
+        //$this->carregarDiasDisponiveis();
+
+
 
         //$this->gerarDiasMes($this->anoAtual,$this->mesAtual);
+
+    }
+
+    public function verificarAgendaBarbeiro($mes,$ano): bool
+    {
+        $agenda = Agenda::where('user_id',$this->barbeiroSelecionado)
+            ->where('mes',$mes)
+            ->where('ano',$ano)
+            ->first();
+        if ($agenda){
+            return true;
+        }
+        return false;
 
     }
 
@@ -140,7 +166,7 @@ class AgendamentoRestrita extends Component
         $this->carregarHorariosDisponiveis();
     }
 
-    function gerarDiasMes(int $year, int $month): array
+    public function gerarDiasMes(int $year, int $month): array
     {
         $startOfMonth = Carbon::createFromDate($year, $month, 1)->startOfDay();
         $endOfMonth = $startOfMonth->copy()->endOfMonth();
@@ -152,6 +178,138 @@ class AgendamentoRestrita extends Component
         }
 
         return $days;
+    }
+
+    public function gerarHorariosDia($diaId)
+    {
+        $horarios = [
+            '08:00:00',
+            '08:30:00',
+            '09:00:00',
+            '09:30:00',
+            '10:00:00',
+            '10:30:00',
+            '11:00:00',
+            '11:30:00',
+            '12:00:00',
+            '12:30:00',
+            '13:00:00',
+            '13:30:00',
+            '14:00:00',
+            '14:30:00',
+            '15:00:00',
+            '15:30:00',
+            '16:00:00',
+            '16:30:00',
+            '17:00:00',
+            '17:30:00',
+            '18:00:00',
+            '18:30:00',
+            '19:00:00'
+        ];
+        $horariosDisponiveis = [];
+        foreach ($horarios as $key => $horario){
+            $horariosDisponiveis[$key] = [
+                'agenda_dia_id' => $diaId,
+                'horario' => $horario,
+                'disponibilidade' => 1
+            ];
+        }
+        return $horariosDisponiveis;
+
+    }
+
+
+    public function adicionarMes()
+    {
+        $dataUltimaAgenda = Agenda::where('user_id',$this->barbeiroSelecionado)
+            ->orderBy('ano','desc')
+            ->orderBy('mes','desc')
+            ->first();
+        if (!$dataUltimaAgenda){
+            $proximoMesValido = Carbon::now();
+        }else{
+            $dataUltimaAgenda = Carbon::createFromDate($dataUltimaAgenda->ano,$dataUltimaAgenda->mes,1);
+            $proximoMesValido = Carbon::createFromDate($dataUltimaAgenda->year,$dataUltimaAgenda->month,1)->addMonth();
+        }
+
+        $novaAgenda = Agenda::create([
+            'user_id' => $this->barbeiroSelecionado,
+            'mes' => $proximoMesValido->month,
+            'ano' => $proximoMesValido->year,
+            'status' => 1
+        ]);
+
+        $novoMes = $this->gerarDiasMes($proximoMesValido->year,$proximoMesValido->month);
+        foreach ($novoMes as $key => $dia){
+            $diaDisponivel = AgendaDia::create([
+                'agenda_id' => $novaAgenda->id,
+                'dia' => $dia,
+                'disponibilidade' => 1
+            ]);
+            $horarios = $this->gerarHorariosDia($diaDisponivel->id);
+            $diaDisponivel->agendaDiaHorario()->createMany($horarios);
+        }
+        $this->proximoMes = false;
+        $this->mesAnterior = true;
+        $this->mesAtual = $proximoMesValido->month;
+        $this->anoAtual = $proximoMesValido->year;
+        $this->buscarAgendaBarbeiro($proximoMesValido->month,$proximoMesValido->year);
+    }
+
+
+    public function avancarMes()
+    {
+        if ($this->proximoMes === false){
+            return;
+        }
+        $mesAtual =  $this->mesAtual;
+        $anoAtual = $this->anoAtual;
+        $mesAtual++;
+        if ($mesAtual > 12){
+            $mesAtual = 1;
+            $anoAtual++;
+        }
+
+        $agendaValida = $this->verificarAgendaBarbeiro($mesAtual,$anoAtual);
+
+        if ($agendaValida){
+            $this->proximoMes = true;
+            $this->mesAnterior = true;
+            $this->mesAtual = $mesAtual;
+            $this->anoAtual = $anoAtual;
+            $this->buscarAgendaBarbeiro($this->mesAtual,$this->anoAtual);
+        }else{
+            $this->proximoMes = false;
+        }
+
+
+    }
+
+    public function voltarMes()
+    {
+        if ($this->mesAnterior === false){
+            return;
+        }
+        $mesAtual =  $this->mesAtual;
+        $anoAtual = $this->anoAtual;
+        $mesAtual--;
+        if ($mesAtual < 1){
+            $mesAtual = 12;
+            $anoAtual--;
+        }
+        $agendaValida = $this->verificarAgendaBarbeiro($mesAtual,$anoAtual);
+
+        if ($agendaValida){
+            $this->mesAnterior = true;
+            $this->proximoMes = true;
+            $this->mesAtual = $mesAtual;
+            $this->anoAtual = $anoAtual;
+            $this->buscarAgendaBarbeiro($this->mesAtual,$this->anoAtual);
+        }else{
+            $this->mesAnterior = false;
+        }
+
     }
 
     public function render()

@@ -154,14 +154,14 @@
         @endif
         @if($passoAtual === 3)
                 <div class="flex flex-col w-full mx-auto max-w-3xl justify-center p-6 border border-gray-300 rounded-2xl">
-                    <h2 class="text-lg font-bold text-indigo-600">{{$nome}}, escolha o dia e horário</h2>
-                    <x-calendario-agendamento :dias-agenda="$agenda" :horarios-disponiveis="$horariosDisponiveis" :horario-selecionado="$horarioSelecionado" :dia-selecionado="$diaSelecionado" :dados-dia-selecionado="$dadosDiaSelecionado"/>
+                    <h2 class="text-lg font-bold text-indigo-600">{{explode(' ',$nome)[0]}}, escolha o dia e horário</h2>
+                    <x-calendario-agendamento :dias-agenda="$agenda" :horarios-disponiveis="$horariosDisponiveis" :horario-selecionado="$horarioSelecionado" :dia-selecionado="$diaSelecionado" :dados-dia-selecionado="$dadosDiaSelecionado" :proximo-mes="$proximoMes" :mes-anterior="$mesAnterior"/>
                 </div>
 
         @endif
         @if($passoAtual === 4)
                 <div class="flex flex-col w-full mx-auto max-w-sm justify-center p-6 border border-gray-300 rounded-2xl">
-                    <h2 class="text-lg font-bold text-indigo-600">{{$nome}}, agendamento realizado!</h2>
+                    <h2 class="text-lg font-bold text-indigo-600">{{explode(' ',$nome)[0]}}, agendamento realizado!</h2>
                     <div class="flex justify-center max-auto">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-20 w-20 text-green-500">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />

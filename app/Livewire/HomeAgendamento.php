@@ -11,7 +11,7 @@ use Livewire\Component;
 
 class HomeAgendamento extends Component
 {
-    public $passoAtual = 3;
+    public $passoAtual = 1;
     public $nome = '';
     public $email = '';
 
@@ -33,15 +33,26 @@ class HomeAgendamento extends Component
     public $barbeiroSelecionado = 1;
     public $agenda = [];
 
-    public $mesAtual = '10';
-    public $anoAtual = '2024';
+    public $mesAtual = '';
+    public $anoAtual = '';
+
+    public bool $proximoMes = true;
+    public bool $mesAnterior = true;
 
     public function mount()
     {
-       $this->barbeiroSelecionado = 1;
-       $this->carregarDiasDisponiveis();
+        $this->barbeiroSelecionado = 1;
+        //$this->carregarDiasDisponiveis();
 
-        $this->buscarAgendaBarbeiro($this->mesAtual,$this->anoAtual);
+        $dataUltimaAgenda = Agenda::where('user_id',$this->barbeiroSelecionado)
+            ->orderBy('ano','desc')
+            ->orderBy('mes','desc')
+            ->first();
+        if ($dataUltimaAgenda){
+            $this->mesAtual = $dataUltimaAgenda->mes;
+            $this->anoAtual = $dataUltimaAgenda->ano;
+            $this->buscarAgendaBarbeiro($this->mesAtual,$this->anoAtual);
+        }
 
     }
 
@@ -283,17 +294,18 @@ class HomeAgendamento extends Component
                 'sobrancelha' => $this->sobrancelha,
             ]);
 
-            $gravacaoBloqueio = AgendaDiaHorario::where('id',$this->horarioSelecionado)
+                AgendaDiaHorario::where('id',$this->horarioSelecionado)
                 ->update([
                     'disponibilidade' => 0 // false
                 ]);
 
             if ($gravacao) {
                 $this->passoTresCompleto = true;
-                //$this->passoAtual = 4;
-                $this->reset();
+                $this->passoAtual = 4;
+
                 $this->carregarDiasDisponiveis();
                 $this->buscarAgendaBarbeiro($this->mesAtual,$this->anoAtual);
+                //$this->reset('nome','email','corte','barba','sobrancelha','diaSelecionado','horarioSelecionado');
             } else {
                 $this->addError('horarioSelecionado','Ops! este horário está bloqueado, selecione outra opção!');
             }
@@ -312,6 +324,74 @@ class HomeAgendamento extends Component
         return true;
 
     }
+
+    public function verificarAgendaBarbeiro($mes,$ano): bool
+    {
+        $agenda = Agenda::where('user_id',$this->barbeiroSelecionado)
+            ->where('mes',$mes)
+            ->where('ano',$ano)
+            ->first();
+        if ($agenda){
+            return true;
+        }
+        return false;
+
+    }
+
+    public function avancarMes()
+    {
+        if ($this->proximoMes === false){
+            return;
+        }
+        $mesAtual =  $this->mesAtual;
+        $anoAtual = $this->anoAtual;
+        $mesAtual++;
+        if ($mesAtual > 12){
+            $mesAtual = 1;
+            $anoAtual++;
+        }
+
+        $agendaValida = $this->verificarAgendaBarbeiro($mesAtual,$anoAtual);
+
+        if ($agendaValida){
+            $this->proximoMes = true;
+            $this->mesAnterior = true;
+            $this->mesAtual = $mesAtual;
+            $this->anoAtual = $anoAtual;
+            $this->buscarAgendaBarbeiro($this->mesAtual,$this->anoAtual);
+        }else{
+            $this->proximoMes = false;
+        }
+
+
+    }
+
+    public function voltarMes()
+    {
+        if ($this->mesAnterior === false){
+            return;
+        }
+        $mesAtual =  $this->mesAtual;
+        $anoAtual = $this->anoAtual;
+        $mesAtual--;
+        if ($mesAtual < 1){
+            $mesAtual = 12;
+            $anoAtual--;
+        }
+        $agendaValida = $this->verificarAgendaBarbeiro($mesAtual,$anoAtual);
+
+        if ($agendaValida){
+            $this->mesAnterior = true;
+            $this->proximoMes = true;
+            $this->mesAtual = $mesAtual;
+            $this->anoAtual = $anoAtual;
+            $this->buscarAgendaBarbeiro($this->mesAtual,$this->anoAtual);
+        }else{
+            $this->mesAnterior = false;
+        }
+
+    }
+
     public function render()
     {
         return view('livewire.home-agendamento');
