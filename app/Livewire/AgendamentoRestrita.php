@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Agenda;
 use App\Models\AgendaDia;
+use App\Models\AgendaDiaHorario;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -37,12 +38,6 @@ class AgendamentoRestrita extends Component
             $this->anoAtual = $dataUltimaAgenda->ano;
             $this->buscarAgendaBarbeiro($this->mesAtual,$this->anoAtual);
         }
-
-        //$this->carregarDiasDisponiveis();
-
-
-
-        //$this->gerarDiasMes($this->anoAtual,$this->mesAtual);
 
     }
 
@@ -148,7 +143,7 @@ class AgendamentoRestrita extends Component
         }
         if (!empty($diaId)) {
             $diaDisponivel = AgendaDia::where('id',$diaId)
-                ->where('disponibilidade',1)
+                //->where('disponibilidade',1)
                 ->first();
 
             $this->dadosDiaSelecionado = $diaDisponivel;
@@ -310,6 +305,87 @@ class AgendamentoRestrita extends Component
             $this->mesAnterior = false;
         }
 
+    }
+
+    public function bloquearDia(){
+        $dia = AgendaDia::find($this->diaSelecionado);
+        if ($dia === null){
+            return;
+        }
+        if ($dia){
+            $dia->disponibilidade = 0;
+            $dia->save();
+
+
+            //bloquea também todos os horarios deste dia
+            $horarios = AgendaDiaHorario::where('agenda_dia_id',$dia->id)->get();
+            foreach ($horarios as $horario){
+                $horario->disponibilidade = 0;
+                $horario->save();
+            }
+            $this->carregarDiasDisponiveis();
+            $this->buscarAgendaBarbeiro($this->mesAtual,$this->anoAtual);
+            $this->carregarHorariosDisponiveis();
+            $this->horarioSelecionado = 0;
+            $this->diaSelecionado = 0;
+
+        }
+    }
+
+    public function desbloquearDia(){
+        $dia = AgendaDia::find($this->diaSelecionado);
+        if ($dia === null){
+            return;
+        }
+        if ($dia){
+            $dia->disponibilidade = 1;
+            $dia->save();
+
+            //desbloquea também todos os horarios deste dia
+            $horarios = AgendaDiaHorario::where('agenda_dia_id',$dia->id)->get();
+            foreach ($horarios as $horario){
+                $horario->disponibilidade = 1;
+                $horario->save();
+            }
+            $this->carregarDiasDisponiveis();
+            $this->buscarAgendaBarbeiro($this->mesAtual,$this->anoAtual);
+            $this->carregarHorariosDisponiveis();
+            $this->horarioSelecionado = 0;
+            $this->diaSelecionado = 0;
+        }
+    }
+
+    public function bloquearHorario(){
+        $horario = AgendaDiaHorario::find($this->horarioSelecionado);
+        if ($horario === null || $horario->disponibilidade === 0){
+            return;
+        }
+
+        if ($horario){
+            $horario->disponibilidade = 0;
+            $horario->save();
+            $this->horarioSelecionado = 0;
+            $this->carregarHorariosDisponiveis();
+        }
+    }
+
+    public function desbloquearHorario(){
+        $horario = AgendaDiaHorario::find($this->horarioSelecionado);
+        if ($horario === null || $horario->disponibilidade === 1){
+            return;
+        }
+        //busca o dia referente a este horario para saber se está bloqueado
+        $dia = AgendaDia::find($horario->agenda_dia_id);
+        if ($dia->disponibilidade === 0){
+            $this->addError('horarioSelecionado', 'Ops! Este horário está indisponível pois o dia está bloqueado.');
+            return;
+        }
+        if ($horario){
+            $horario->disponibilidade = 1;
+            $horario->save();
+            $this->horarioSelecionado = 0;
+            $this->carregarHorariosDisponiveis();
+        }
     }
 
     public function render()
